@@ -1,0 +1,36 @@
+name: 'Hetzner Cloud API Action'
+description: 'Interact with the Hetzner Cloud API from a GitHub'
+inputs:
+  verbose:
+    description: 'Whether to output verbose logs'
+    required: false
+  api-token:
+    description: 'The Hetzner Cloud API token'
+    required: true
+  action:
+    description: 'The action to perform'
+    required: true
+  server-image:
+    description: 'The image to use for the server'
+    required: false
+  server-location:
+    description: 'The location to create the server in'
+    required: false
+  server-name:
+    description: 'The name of the server'
+    required: false
+  server-ipv4-id:
+    description: 'The ID of the IPv4 address to assign to the server'
+    required: false
+  server-type:
+    description: 'The type of the server'
+    required: false
+  ssh-key-names:
+    description: 'The names of the SSH keys to add to the server, separated by commas'
+    required: false
+  server-start-after-create:
+    description: 'Whether to start the server after creating it'
+    required: false
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
