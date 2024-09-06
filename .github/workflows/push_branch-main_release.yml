@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - next
+      - next-major
+      - beta
+      - alpha
+      - '[0-9]+.[0-9]+.x'
+      - '[0-9]+.x'
+
+env:
+  node-js-version: 20.x
+  author-name: Marc Scheib
+  author-email: marc.scheib@cycrilabs.com
+
+jobs:
+  release:
+    name: Release
+    uses: CycriLabs/eam-gha-workflows/.github/workflows/dev-sec-ops_push_release.yml@1
+    with:
+      node-js-version: 20.x
+      # env vars can't be used here
+      author-name: Marc Scheib
+      author-email: marc.scheib@cycrilabs.com
+
+  tag:
+    name: Add additional tags
+    runs-on: ubuntu-latest
+    needs: release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0 # required to get all history for git describe
+
+      - name: Retrieve last tag
+        run: |
+          echo "TAG_MAJOR_MINOR=$(git describe --abbrev=0 --tags | cut -d. -f1,2)" >> $GITHUB_OUTPUT
+          echo "TAG_MAJOR=$(git describe --abbrev=0 --tags | cut -d. -f1)" >> $GITHUB_OUTPUT
+        id: version
+
+      - name: Add additional tags
+        run: |
+          git config --global user.name '${{ env.author-name }}'
+          git config --global user.email '${{ env.author-email }}'
+          git tag --force ${{ steps.version.outputs.TAG_MAJOR_MINOR }}
+          git tag --force ${{ steps.version.outputs.TAG_MAJOR }}
+          git push --tags --force
