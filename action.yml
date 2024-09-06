@@ -1,9 +1,6 @@
 name: 'Hetzner Cloud API Action'
 description: 'Interact with the Hetzner Cloud API from a GitHub'
 inputs:
-  verbose:
-    description: 'Whether to output verbose logs'
-    required: false
   api-token:
     description: 'The Hetzner Cloud API token'
     required: true
@@ -30,6 +27,9 @@ inputs:
     required: false
   server-start-after-create:
     description: 'Whether to start the server after creating it'
+    required: false
+  server-id:
+    description: 'The ID of the server to perform the action on'
     required: false
 runs:
   using: 'node20'

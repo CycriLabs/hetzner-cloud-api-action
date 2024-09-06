@@ -26700,6 +26700,16 @@ class HetznerCloudApiClient {
       'Content-Type': 'application/json',
     });
   }
+
+  /**
+   * Delete a server.
+   *
+   * @param {string} serverId - Server ID.
+   * @returns {Promise} - Promise representing the request.
+   */
+  deleteServer(serverId) {
+    return this.#request('DELETE', `/servers/${serverId}`, null);
+  }
 }
 
 ;// CONCATENATED MODULE: ./src/hetzner-cloud.js
@@ -26712,18 +26722,17 @@ class HetznerCloudApiClient {
 async function run() {
   try {
     const inputs = {
-      verbose: core.getInput('verbose') === 'true',
       apiToken: core.getInput('api-token'),
       action: core.getInput('action'),
     };
 
-    const logger = (message, verboseMessage) => {
-      if (inputs.verbose) {
-        core.info(verboseMessage || message);
-      } else {
-        core.info(message);
+    const logger = (message, debugMessage) => {
+      core.info(message);
+
+      if (debugMessage) {
+        core.debug(debugMessage);
       }
-    }
+    };
 
     const client = new HetznerCloudApiClient(inputs.apiToken);
 
@@ -26752,6 +26761,12 @@ async function run() {
       logger('Server created', JSON.stringify(await response.json()));
     }
 
+    if (inputs.action === 'delete-server') {
+      const serverId = core.getInput('server-id');
+      logger(`Deleting server ${serverId} from Hetzner Cloud API...`);
+      const response = await client.deleteServer(serverId);
+      logger('Server deleted', JSON.stringify(await response.json()));
+    }
   } catch (error) {
     core.setFailed(error.message);
   }
