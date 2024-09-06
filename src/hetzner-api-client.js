@@ -46,4 +46,14 @@ export class HetznerCloudApiClient {
       'Content-Type': 'application/json',
     });
   }
+
+  /**
+   * Delete a server.
+   *
+   * @param {string} serverId - Server ID.
+   * @returns {Promise} - Promise representing the request.
+   */
+  deleteServer(serverId) {
+    return this.#request('DELETE', `/servers/${serverId}`, null);
+  }
 }
