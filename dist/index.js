@@ -26758,7 +26758,10 @@ async function run() {
 
       logger('Creating server on Hetzner Cloud API...');
       const response = await client.createServer(server);
-      logger('Server created', JSON.stringify(await response.json()));
+      const result = await response.json();
+      logger('Server created', JSON.stringify(result));
+      logger(`Server with ID '${result.server.id}' created.`);
+      core.exportVariable('SERVER_ID', result.server.id);
     }
 
     if (inputs.action === 'delete-server') {
