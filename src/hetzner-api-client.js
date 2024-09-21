@@ -56,4 +56,14 @@ export class HetznerCloudApiClient {
   deleteServer(serverId) {
     return this.#request('DELETE', `/servers/${serverId}`, null);
   }
+
+  /**
+   * Shut down a server gracefully.
+   *
+   * @param {string} serverId - Server ID.
+   * @returns {Promise} - Promise representing the request.
+   */
+  shutdownServer(serverId) {
+    return this.#request('POST', `/servers/${serverId}/actions/shutdown`, null);
+  }
 }

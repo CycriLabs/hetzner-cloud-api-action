@@ -49,9 +49,16 @@ export async function run() {
       core.exportVariable('SERVER_ID', result.server.id);
     }
 
+    if (inputs.action === 'shutdown-server') {
+      const serverId = core.getInput('server-id');
+      logger(`Shut down server ${serverId} gracefully via Hetzner Cloud API...`);
+      const response = await client.shutdownServer(serverId);
+      logger('Server shut down', JSON.stringify(await response.json()));
+    }
+
     if (inputs.action === 'delete-server') {
       const serverId = core.getInput('server-id');
-      logger(`Deleting server ${serverId} from Hetzner Cloud API...`);
+      logger(`Deleting server ${serverId} via Hetzner Cloud API...`);
       const response = await client.deleteServer(serverId);
       logger('Server deleted', JSON.stringify(await response.json()));
     }
