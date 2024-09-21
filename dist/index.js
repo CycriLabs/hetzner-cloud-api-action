@@ -26669,14 +26669,22 @@ class HetznerCloudApiClient {
     this.token = token;
   }
 
-  #request(method, path, body, headers = {}) {
+  /**
+   * Send a request to the Hetzner Cloud API.
+   *
+   * @param {string} method - HTTP method.
+   * @param {string} path - API path.
+   * @param requestData {{ body?: object, headers?: object }} - Request data.
+   * @returns {Promise<Response>}
+   */
+  #request(method, path, requestData = { headers: {} }) {
     return fetch(`${config.url}${path}`, {
       method,
       headers: {
         Authorization: `Bearer ${this.token}`,
-        ...headers,
+        ...requestData.headers,
       },
-      body: JSON.stringify(body),
+      body: requestData.body ? JSON.stringify(requestData.body) : null,
     });
   }
 
@@ -26686,7 +26694,7 @@ class HetznerCloudApiClient {
    * @returns {Promise} - Promise representing the request.
    */
   getServers() {
-    return this.#request('GET', '/servers', null);
+    return this.#request('GET', '/servers');
   }
 
   /**
@@ -26696,8 +26704,11 @@ class HetznerCloudApiClient {
    * @returns {Promise} - Promise representing the request.
    */
   createServer(server) {
-    return this.#request('POST', '/servers', server, {
-      'Content-Type': 'application/json',
+    return this.#request('POST', '/servers', {
+      body: server,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
   }
 
@@ -26708,7 +26719,7 @@ class HetznerCloudApiClient {
    * @returns {Promise} - Promise representing the request.
    */
   deleteServer(serverId) {
-    return this.#request('DELETE', `/servers/${serverId}`, null);
+    return this.#request('DELETE', `/servers/${serverId}`);
   }
 
   /**
@@ -26718,7 +26729,7 @@ class HetznerCloudApiClient {
    * @returns {Promise} - Promise representing the request.
    */
   shutdownServer(serverId) {
-    return this.#request('POST', `/servers/${serverId}/actions/shutdown`, null);
+    return this.#request('POST', `/servers/${serverId}/actions/shutdown`);
   }
 }
 
