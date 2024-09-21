@@ -26731,6 +26731,16 @@ class HetznerCloudApiClient {
   shutdownServer(serverId) {
     return this.#request('POST', `/servers/${serverId}/actions/shutdown`);
   }
+
+  /**
+   * Power on a server.
+   *
+   * @param {string} serverId - Server ID.
+   * @returns {Promise} - Promise representing the request.
+   */
+  powerOnServer(serverId) {
+    return this.#request('POST', `/servers/${serverId}/actions/poweron`);
+  }
 }
 
 ;// CONCATENATED MODULE: ./src/hetzner-cloud.js
@@ -26783,6 +26793,13 @@ async function run() {
       logger('Server created', JSON.stringify(result));
       logger(`Server with ID '${result.server.id}' created.`);
       core.exportVariable('SERVER_ID', result.server.id);
+    }
+
+    if (inputs.action === 'poweron-server') {
+      const serverId = core.getInput('server-id');
+      logger(`Power on server ${serverId} via Hetzner Cloud API...`);
+      const response = await client.powerOnServer(serverId);
+      logger('Server started', JSON.stringify(await response.json()));
     }
 
     if (inputs.action === 'shutdown-server') {

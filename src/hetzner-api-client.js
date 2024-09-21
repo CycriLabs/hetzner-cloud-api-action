@@ -77,4 +77,14 @@ export class HetznerCloudApiClient {
   shutdownServer(serverId) {
     return this.#request('POST', `/servers/${serverId}/actions/shutdown`);
   }
+
+  /**
+   * Power on a server.
+   *
+   * @param {string} serverId - Server ID.
+   * @returns {Promise} - Promise representing the request.
+   */
+  powerOnServer(serverId) {
+    return this.#request('POST', `/servers/${serverId}/actions/poweron`);
+  }
 }

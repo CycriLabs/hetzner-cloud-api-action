@@ -49,6 +49,13 @@ export async function run() {
       core.exportVariable('SERVER_ID', result.server.id);
     }
 
+    if (inputs.action === 'poweron-server') {
+      const serverId = core.getInput('server-id');
+      logger(`Power on server ${serverId} via Hetzner Cloud API...`);
+      const response = await client.powerOnServer(serverId);
+      logger('Server started', JSON.stringify(await response.json()));
+    }
+
     if (inputs.action === 'shutdown-server') {
       const serverId = core.getInput('server-id');
       logger(`Shut down server ${serverId} gracefully via Hetzner Cloud API...`);
