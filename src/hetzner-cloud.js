@@ -34,11 +34,11 @@ export async function run() {
         name: core.getInput('server-name'),
         public_net: {
           enable_ipv6: false,
-          ipv4: core.getInput('server-ipv4-id'),
+          ipv4: parseInt(core.getInput('server-ipv4-id'), 10),
         },
         server_type: core.getInput('server-type'),
         ssh_keys: core.getInput('ssh-key-names').split(','),
-        start_after_create: core.getInput('server-start-after-create') === 'true',
+        start_after_create: core.getBooleanInput('server-start-after-create'),
       };
 
       logger('Creating server on Hetzner Cloud API...');
